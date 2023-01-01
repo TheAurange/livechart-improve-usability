@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name    [LiveChart] Improve Usability
 // @author  Aurange
-// @version 1.4
+// @version 1.5
 // @match   https://www.livechart.me/*-*/*
 // @match   https://www.livechart.me/tba/*
 // ==/UserScript==
@@ -9,6 +9,7 @@
 "use strict";
 
 let url = window.location.href.split("/");
+
 if(url[4] !== "all") window.location.href = window.location.href.replace(/\/\w+$/, "/all");
 
 window.addEventListener("keyup", function(e){
@@ -36,7 +37,7 @@ new MutationObserver(function(mutationList, observer){
         if(e.parentElement.parentElement.children[1].innerText.indexOf("Began") === -1){
           let end = new Date(e.parentElement.parentElement.children[1].innerText.replace(" at", ",").replace(/(am|pm)/, " $&"));
 
-          fixer = Math.ceil(fixer[0].slice(0, -1) / 7);
+          fixer = Math.ceil(((fixer[0].slice(0, -1) * 86400000) + (fixer[1].slice(0, -1) * 3600000) + (fixer[2].slice(0, -1) * 60000) + (fixer[3].slice(0, -1) * 1000)) / 604800000);
 
           end.setDate(end.getDate() + ((e.innerText.split(" eps")[0] - 1) * 7));
           end.setDate(end.getDate() + ((eC - Math.ceil((end - new Date()) / 604800000)) * 7));
