@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name    [LiveChart] Improve Usability
 // @author  Aurange
-// @version 1.6
+// @version 1.7
 // @match   https://www.livechart.me/*-*/*
 // @match   https://www.livechart.me/tba/*
 // ==/UserScript==
@@ -35,9 +35,7 @@ new MutationObserver(function(mutationList, observer){
             pluralizer = (eL > 1) ? "s" : "",
             info = document.createElement("p");
 
-        count = (count[0].slice(0, -1) * 86400000) + (count[1].slice(0, -1) * 3600000) + (count[2].slice(0, -1) * 60000) + (count[3].slice(0, -1) * 1000);
-
-        end = new Date(Date.now() + count);
+        end = new Date(Date.now() + ((count[0].slice(0, -1) * 86400000) + (count[1].slice(0, -1) * 3600000) + (count[2].slice(0, -1) * 60000) + (count[3].slice(0, -1) * 1000)));
 
         end.setDate(end.getDate() + ((eL - 1) * 7));
 
