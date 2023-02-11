@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name    [LiveChart] Improve Usability
 // @author  Aurange
-// @version 1.7
+// @version 1.8
 // @match   https://www.livechart.me/*-*/*
 // @match   https://www.livechart.me/tba/*
 // ==/UserScript==
@@ -10,7 +10,7 @@
 
 let url = window.location.href.split("/");
 
-if(url[4] !== "all") window.location.href = window.location.href.replace(/\/\w+$/, "/all");
+if(url[4].split("?")[0] !== "all") window.location.href = window.location.href.replace("tv", "all");
 
 window.addEventListener("keyup", function(e){
   if(e.key === "ArrowLeft") document.querySelector("div[title='Previous season'] > a").click();
