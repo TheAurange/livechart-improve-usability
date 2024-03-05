@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name    [LiveChart] Improve Usability
 // @author  Aurange
-// @version 1.11
+// @version 1.12
 // @match   https://www.livechart.me/*-*/*
 // @match   https://www.livechart.me/tba/*
 // ==/UserScript==
@@ -23,27 +23,30 @@ new MutationObserver(function(mutationList, observer){
   if(document.querySelector("div.poster-container")){
     observer.disconnect();
 
-    //Begin hide theatrical releases section.
-    document.querySelectorAll("div.anime-card").forEach(e => {
-      if(e.querySelector("div.anime-episodes").innerText.indexOf("×") === -1 && e.querySelector("div.anime-synopsis").innerText.indexOf("※ NOTE: BD & DVD Release") === -1) e.parentElement.style.display = "none";
-    });
-    //End hide theatrical releases section.
+    document.querySelectorAll("article.anime").forEach(e => {
+      let eC = e.querySelector("div.anime-episodes").innerText,
+          eS = e.querySelector("div.anime-synopsis"),
+          cE = e.querySelector("div.release-schedule-info")?.innerText;
 
-    document.querySelectorAll("div.anime-episodes").forEach(e => {
-      if(e.parentElement.parentElement.parentElement.parentElement.style.display !== "none" && e.parentElement.parentElement.parentElement.children[2].children[0].innerText.indexOf("EP") !== -1 && e.innerText.split(" eps")[0].indexOf("?") === -1){
-        let count = e.parentElement.parentElement.parentElement.children[2].children[0].innerText.split(": ")[1].split(" "),
+      //Begin hide theatrical releases section.
+      if((eC.indexOf("×") === -1 && eS.innerText.indexOf("※ NOTE: BD & DVD Release") === -1) || e.querySelector("h3.main-title > a").innerText === "Untitled Studio Colorido Film") e.style.display = "none";
+      //  End hide theatrical releases section.
+
+      eC = eC.split(" eps")[0];
+
+      if(e.style.display !== "none" && cE !== undefined && eC.indexOf("?") === -1){
+        let count = e.querySelector("time").innerText.split(" "),
             end,
-            eL = e.innerText.split(" eps")[0] - e.parentElement.parentElement.parentElement.children[2].children[0].innerText.split("EP")[1].split(":")[0] + 1,
-            pluralizer = (eL > 1) ? "s" : "",
+            eL = eC - cE.split("EP")[1].split(" ")[0] + 1,
             info = document.createElement("p");
 
         end = new Date(Date.now() + ((count[0].slice(0, -1) * 86400000) + (count[1].slice(0, -1) * 3600000) + (count[2].slice(0, -1) * 60000) + (count[3].slice(0, -1) * 1000)));
 
         end.setDate(end.getDate() + ((eL - 1) * 7));
 
-        info.innerText = `This show ends on ${end.toLocaleDateString()}. (${eL} Episode${pluralizer} Left)`;
+        info.innerText = `This show ends on ${end.toLocaleDateString()}. (${eL} Episode${(eL > 1) ? "s" : ""} Left)`;
 
-        e.parentElement.parentElement.children[3].prepend(info);
+        eS.prepend(info);
       }
     });
   }
