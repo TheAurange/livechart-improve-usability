@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name    [LiveChart] Improve Usability
 // @author  Aurange
-// @version 1.14
+// @version 1.15
 // @match   https://www.livechart.me/*-*/*
 // @match   https://www.livechart.me/tba/*
 // ==/UserScript==
@@ -25,7 +25,8 @@ new MutationObserver(function(mutationList, observer){
     document.querySelectorAll("article.anime").forEach(e => {
       let eC = e.querySelector("div.anime-episodes").innerText,
           eS = e.querySelector("div.anime-synopsis"),
-          cE = e.querySelector("div.release-schedule-info")?.innerText;
+          cE = e.querySelector("div.release-schedule-info")?.innerText,
+          count = e.querySelector("time")?.innerText.split(" ");
 
       //Begin hide theatrical releases section.
       if((eC.indexOf("×") === -1 && eS.innerText.indexOf("※ NOTE: BD & DVD Release") === -1) || e.querySelector("h3.main-title > a").innerText === "Untitled Studio Colorido Film") e.style.display = "none";
@@ -33,12 +34,9 @@ new MutationObserver(function(mutationList, observer){
 
       eC = eC.split(" eps")[0];
 
-      if(e.style.display !== "none" && eC.indexOf("?") === -1 && !!cE){
-        let count = e.querySelector("time")?.innerText.split(" "),
-            end,
+      if(e.style.display !== "none" && eC.indexOf("?") === -1 && !!cE && !!count){
+        let end,
             eL = eC - cE.split("EP")[1].split(" ")[0] + 1;
-
-        if(!count) return;
 
         end = new Date(Date.now() + ((count[0].slice(0, -1) * 86400000) + (count[1].slice(0, -1) * 3600000) + (count[2].slice(0, -1) * 60000) + (count[3].slice(0, -1) * 1000)));
 
